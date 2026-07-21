@@ -1,34 +1,69 @@
-import { motion } from "motion/react";
-import { User, Briefcase, Code2, GraduationCap } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useState } from "react";
+
+const LINKS = [
+  { name: "About", href: "#about" },
+  { name: "Stack", href: "#skills" },
+  { name: "Experience", href: "#experience" },
+  { name: "Work", href: "#projects" },
+  { name: "Contact", href: "#contact" },
+];
 
 export function NavBar() {
-  const links = [
-    { name: "Skills", href: "#skills", icon: User },
-    { name: "Experience", href: "#experience", icon: Briefcase },
-    { name: "Projects", href: "#projects", icon: Code2 },
-    { name: "Education", href: "#education", icon: GraduationCap },
-  ];
+  const reduce = useReducedMotion();
+  const [active, setActive] = useState<string>("");
+
+  useEffect(() => {
+    const ids = LINKS.map((l) => l.href.slice(1));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <motion.div 
-      initial={{ y: -100, opacity: 0 }}
+    <motion.nav
+      initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
-      className="fixed top-6 left-1/2 -translate-x-1/2 z-50"
+      transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay: reduce ? 0 : 1.2 }}
+      className="fixed left-1/2 top-5 z-40 -translate-x-1/2"
     >
-      <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-        <div className="absolute inset-0 border-t border-white/10 rounded-full pointer-events-none mix-blend-overlay"></div>
-        {links.map((link) => (
-          <a 
-            key={link.name} 
-            href={link.href} 
-            className="relative p-2.5 text-zinc-400 hover:text-zinc-100 hover:bg-white/5 rounded-full transition-all duration-300 group" 
-            title={link.name}
-          >
-            <link.icon size={20} className="relative z-10 group-hover:scale-110 transition-transform duration-300" />
-          </a>
-        ))}
+      <div className="glass flex items-center gap-1 rounded-full border border-line bg-surface/55 px-2 py-1.5 shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+        {LINKS.map((link) => {
+          const isActive = active === link.href.slice(1);
+          return (
+            <a
+              key={link.name}
+              href={link.href}
+              className="relative rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors"
+            >
+              {isActive && (
+                <motion.span
+                  layoutId="nav-active"
+                  className="absolute inset-0 rounded-full bg-chalk"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                />
+              )}
+              <span
+                className={`relative z-10 transition-colors ${
+                  isActive ? "text-[#0a0a0b]" : "text-ink-muted hover:text-ink"
+                }`}
+              >
+                {link.name}
+              </span>
+            </a>
+          );
+        })}
       </div>
-    </motion.div>
+    </motion.nav>
   );
 }

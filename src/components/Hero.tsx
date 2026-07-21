@@ -1,101 +1,146 @@
-import { motion } from "motion/react";
-import { Github, Linkedin, Mail, FileText, Code2, Sparkles } from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
+import { Github, Linkedin, Mail, Download } from "lucide-react";
+import { Portrait } from "./Portrait";
+import { MagneticButton } from "./ui/MagneticButton";
+import { Typewriter } from "./ui/Typewriter";
+import { charRise, easeOut, staggerParent } from "../lib/motion";
+
+const NAME = "Aryan Tyagi";
+const TYPED = [
+  "Machine Learning systems",
+  "Computer Vision pipelines",
+  "LLM & RAG applications",
+  "Reinforcement Learning agents",
+  "Full-stack, cloud-native apps",
+];
 
 export function Hero() {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+
+  // Whole hero drifts up + fades slightly as you scroll past it.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -60]);
+
+  const container = staggerParent(reduce ? 0 : 0.04);
+
   return (
-    <div className="min-h-[90vh] flex flex-col justify-center pt-20">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-8"
-        >
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/50 border border-white/5 backdrop-blur-md text-zinc-300 text-sm font-medium cursor-default shadow-lg"
+    <header
+      ref={ref}
+      className="relative flex min-h-[100svh] flex-col justify-center pt-28 pb-24"
+    >
+      <motion.div style={{ y: contentY }} className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+        {/* Left: identity */}
+        <div className="relative z-10">
+          {/* The name — the centerpiece. Per-char blur-rise. */}
+          <motion.h1
+            variants={container}
+            initial="hidden"
+            animate="show"
+            aria-label={NAME}
+            className="font-display text-[clamp(3.2rem,11vw,8rem)] font-semibold leading-[0.9] tracking-[-0.025em] text-ink"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            Available for opportunities
-          </motion.div>
-          
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
-              Hi, I'm <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500">Aryan Tyagi</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-zinc-400 max-w-2xl leading-relaxed font-light">
-              A passionate software engineer specializing in <strong className="text-zinc-200 font-medium">AI, Machine Learning</strong>, and <strong className="text-zinc-200 font-medium">Full-Stack Development</strong>. Building intelligent systems and scalable applications.
-            </p>
-          </div>
+            {NAME.split(" ").map((word, wi) => (
+              <span
+                key={wi}
+                className="block overflow-hidden pb-[0.14em] mb-[-0.14em]"
+              >
+                <span className="inline-block">
+                  {word.split("").map((c, ci) => (
+                    <motion.span
+                      key={ci}
+                      variants={charRise}
+                      className="inline-block will-change-transform"
+                    >
+                      {c}
+                    </motion.span>
+                  ))}
+                </span>
+              </span>
+            ))}
+          </motion.h1>
 
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <motion.a 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }} 
-              href="mailto:aryantyagi0504@gmail.com" 
-              className="flex items-center gap-2 px-6 py-3 bg-zinc-100 text-zinc-950 rounded-xl font-semibold hover:bg-white transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-            >
-              <Mail size={20} />
-              Contact Me
-            </motion.a>
-            <motion.a 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }} 
-              href="/resume.pdf" 
-              className="flex items-center gap-2 px-6 py-3 bg-zinc-900/50 backdrop-blur-md text-zinc-100 rounded-xl font-medium border border-white/10 hover:bg-zinc-800 transition-colors"
-            >
-              <FileText size={20} />
-              Download CV
-            </motion.a>
-            <motion.a 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }} 
-              href="https://github.com/Aryan0-101" target="_blank" rel="noreferrer" 
-              className="flex items-center gap-2 px-4 py-3 bg-zinc-900/50 backdrop-blur-md text-zinc-100 rounded-xl font-medium border border-white/10 hover:bg-zinc-800 transition-colors"
-            >
-              <Github size={20} />
-            </motion.a>
-            <motion.a 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }} 
-              href="https://linkedin.com/in/aryan-tyagi05" target="_blank" rel="noreferrer" 
-              className="flex items-center gap-2 px-4 py-3 bg-zinc-900/50 backdrop-blur-md text-zinc-100 rounded-xl font-medium border border-white/10 hover:bg-zinc-800 transition-colors"
-            >
-              <Linkedin size={20} />
-            </motion.a>
-          </div>
-        </motion.div>
+          {/* Chalk underline sweep */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.9, ease: easeOut, delay: reduce ? 0.2 : 0.7 }}
+            className="mt-6 h-[3px] w-32 origin-left rounded-full bg-chalk"
+          />
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="hidden lg:flex justify-center relative"
-        >
-          <div className="w-96 h-96 bg-gradient-to-tr from-emerald-500/20 via-cyan-500/20 to-blue-500/20 rounded-full blur-3xl absolute animate-pulse" style={{ animationDuration: '6s' }}></div>
-          <motion.div 
-            whileHover={{ rotate: 0, scale: 1.05, y: -10 }}
-            className="w-80 h-80 bg-zinc-900/40 backdrop-blur-2xl border border-white/10 rounded-3xl rotate-3 shadow-2xl overflow-hidden relative z-10 flex flex-col items-center justify-center gap-6 transition-all duration-500 group"
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: reduce ? 0.3 : 0.9 }}
+            className="mt-8 max-w-xl text-[clamp(1.05rem,2vw,1.3rem)] leading-relaxed text-ink-muted"
           >
-            <div className="absolute inset-0 border-t border-white/20 rounded-3xl pointer-events-none mix-blend-overlay"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            
-            <div className="relative">
-              <Code2 size={80} className="text-zinc-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
-              <Sparkles size={24} className="text-emerald-400 absolute -top-4 -right-4 animate-pulse" />
+            <span className="font-mono text-sm text-ink">ML / AI Engineer</span>
+            <span className="mx-2 text-ink-faint">—</span>
+            building intelligent systems across computer vision, LLMs, and
+            reinforcement learning, with the full-stack and cloud craft to ship them.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: reduce ? 0.35 : 1.05 }}
+            className="mt-10 flex flex-wrap items-center gap-3"
+          >
+            <MagneticButton href="mailto:aryantyagi0504@gmail.com" variant="primary" data-cursor="email">
+              <Mail size={17} /> Get in touch
+            </MagneticButton>
+            <MagneticButton href="/resume.pdf" target="_blank" rel="noreferrer" data-cursor="pdf">
+              <Download size={17} /> Résumé
+            </MagneticButton>
+            <MagneticButton
+              href="https://github.com/Aryan0-101"
+              target="_blank"
+              rel="noreferrer"
+              className="!px-3.5"
+              aria-label="GitHub"
+            >
+              <Github size={18} />
+            </MagneticButton>
+            <MagneticButton
+              href="https://linkedin.com/in/aryan-tyagi05"
+              target="_blank"
+              rel="noreferrer"
+              className="!px-3.5"
+              aria-label="LinkedIn"
+            >
+              <Linkedin size={18} />
+            </MagneticButton>
+          </motion.div>
+        </div>
+
+        {/* Portrait dissolving into the page, with a typing skills box beneath */}
+        <div className="order-first flex flex-col gap-6 opacity-90 sm:opacity-100 lg:order-none">
+          <Portrait />
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeOut, delay: reduce ? 0.4 : 1.2 }}
+            className="mx-auto w-full max-w-[27rem] rounded-xl border border-line bg-surface/40 p-4 backdrop-blur-sm"
+          >
+            <div className="mb-3 flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-ink-faint/40" />
+              <span className="h-2.5 w-2.5 rounded-full bg-ink-faint/40" />
+              <span className="h-2.5 w-2.5 rounded-full bg-ink-faint/40" />
+              <span className="ml-2 font-mono text-[11px] text-ink-faint">~/what-i-build</span>
             </div>
-            
-            <div className="text-zinc-400 font-mono text-sm bg-zinc-950/50 px-4 py-2 rounded-lg border border-white/5">
-              <span className="text-emerald-400">const</span> developer = <span className="text-cyan-400">true</span>;
+            <div className="font-mono text-sm leading-relaxed text-ink-muted">
+              <span className="text-ink-faint">$</span>{" "}
+              <span className="text-ink-faint">building</span>{" "}
+              <Typewriter phrases={TYPED} className="text-ink" />
             </div>
           </motion.div>
-        </motion.div>
-      </div>
-    </div>
+        </div>
+      </motion.div>
+    </header>
   );
 }

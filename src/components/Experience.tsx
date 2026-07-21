@@ -1,67 +1,95 @@
-import { BentoCard } from "./BentoGrid";
-import { Briefcase } from "lucide-react";
 import { motion } from "motion/react";
+import { Building2, Target, Workflow, Lightbulb, Brain, MessageSquare, KanbanSquare, GitBranch, LineChart } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { SectionHeading } from "./ui/Section";
+import { easeOut } from "../lib/motion";
 
 export function Experience() {
   return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-3 text-2xl font-semibold">
-        <Briefcase className="text-zinc-400" />
-        <h2>Experience & Leadership</h2>
-      </div>
-      
-      <BentoCard>
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px] group-hover:bg-cyan-500/20 transition-colors duration-700 -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
-        <div className="relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
+    <div>
+      <SectionHeading title="Experience" kicker="Where I've worked" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-70px" }}
+        transition={{ duration: 0.6, ease: easeOut }}
+        className="group relative overflow-hidden rounded-2xl border border-line bg-surface/40 p-8 transition-colors hover:border-line-strong md:p-10"
+      >
+        {/* Big index-free watermark */}
+        <span
+          aria-hidden
+          className="text-outline pointer-events-none absolute -right-4 -top-8 select-none font-display text-[9rem] font-semibold leading-none opacity-[0.06]"
+        >
+          01
+        </span>
+
+        <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-start">
+          <div className="flex items-start gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line-strong bg-bg/50 text-ink">
+              <Building2 size={22} />
+            </span>
             <div>
-              <h3 className="text-2xl font-bold text-zinc-100">Co-Founder</h3>
-              <p className="text-xl text-cyan-400 mt-1">Trawell</p>
-            </div>
-            <div className="text-left md:text-right">
-              <span className="inline-block px-3 py-1 bg-zinc-950/50 border border-white/5 text-zinc-300 rounded-full text-sm mb-2">Jul 2025 – Jan 2026</span>
-              <p className="text-zinc-400">Ghaziabad, India</p>
+              <h3 className="text-2xl font-semibold text-ink">Co-Founder</h3>
+              <p className="mt-0.5 text-lg text-ink-muted">Trawell</p>
+              <p className="mt-0.5 text-sm text-ink-faint">Ghaziabad, India</p>
             </div>
           </div>
-          
-          <div className="space-y-8">
-            <p className="text-zinc-300 leading-relaxed text-lg">
-              Leading product strategy and development for a travel technology platform, conducting market research and competitive analysis to identify user needs and market opportunities.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
-              <div>
-                <h4 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Core Competencies</h4>
-                <div className="flex flex-wrap gap-2">
-                  {["Product Strategy", "Problem Solving", "Critical Thinking", "Cross-functional Communication"].map(skill => (
-                    <motion.span 
-                      whileHover={{ scale: 1.05, backgroundColor: "#06b6d4", color: "#000", borderColor: "#06b6d4" }}
-                      key={skill} 
-                      className="px-3 py-1.5 bg-zinc-950/50 rounded-lg text-sm text-zinc-300 cursor-default transition-colors border border-white/5"
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Workflow & Management</h4>
-                <div className="flex flex-wrap gap-2">
-                  {["Project Management", "JIRA", "Agile", "Market Research"].map(tool => (
-                    <motion.span 
-                      whileHover={{ scale: 1.05, backgroundColor: "#06b6d4", color: "#000", borderColor: "#06b6d4" }}
-                      key={tool} 
-                      className="px-3 py-1.5 bg-zinc-950/50 rounded-lg text-sm text-zinc-300 cursor-default transition-colors border border-white/5"
-                    >
-                      {tool}
-                    </motion.span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <span className="font-mono text-sm text-ink-faint md:pt-1">Jul 2025 – Jan 2026</span>
         </div>
-      </BentoCard>
+
+        <p className="max-w-2xl leading-relaxed text-ink-muted">
+          Led product strategy and end-to-end development for a travel technology
+          platform. Ran market research and competitive analysis to identify user
+          needs and market opportunities, shaping the product roadmap from the ground up.
+        </p>
+
+        <div className="mt-8 grid gap-8 border-t border-line pt-6 md:grid-cols-2">
+          <TagGroup
+            label="Focus"
+            tags={[
+              { name: "Product Strategy", Icon: Target },
+              { name: "Problem Solving", Icon: Lightbulb },
+              { name: "Critical Thinking", Icon: Brain },
+              { name: "Communication", Icon: MessageSquare },
+            ]}
+          />
+          <TagGroup
+            label="Workflow"
+            tags={[
+              { name: "Project Management", Icon: KanbanSquare },
+              { name: "JIRA", Icon: Workflow },
+              { name: "Agile", Icon: GitBranch },
+              { name: "Market Research", Icon: LineChart },
+            ]}
+          />
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+function TagGroup({
+  label,
+  tags,
+}: {
+  label: string;
+  tags: { name: string; Icon: LucideIcon }[];
+}) {
+  return (
+    <div>
+      <h4 className="mb-3 font-mono text-xs uppercase tracking-wider text-ink-faint">{label}</h4>
+      <div className="flex flex-wrap gap-2">
+        {tags.map(({ name, Icon }) => (
+          <span
+            key={name}
+            className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface/50 px-3 py-1.5 text-sm text-ink-muted"
+          >
+            <Icon size={14} className="text-ink-faint transition-colors group-hover:text-ink" />
+            {name}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
